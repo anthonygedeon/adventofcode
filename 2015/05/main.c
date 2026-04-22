@@ -55,8 +55,41 @@ bool contains_doubles(const char *s)
   return result >= 1;
 }
 
+void substr(char *dest, const char *src, int start, size_t end)
+{
+    strncpy(dest, src + start, end - start);
+}
+
+bool contains_pair(const char *s)
+{
+  size_t len = strlen(s);
+  for (size_t i = 0; i < len; i++)
+    for (size_t j = i + 1; j < len; j++)
+      if (strncmp(s + i, s + j, 2) == 0 && j - i > 1)
+	return true;
+  return false;
+}
+
+bool contains_triplet(const char *s)
+{
+  for (int i = 0; s[i] != '\0'; i++)
+  {
+    char triplet[4] = {'\0'};
+    memcpy(triplet, s + i, 3);
+    if (triplet[0] == triplet[2]) return true;
+  }
+  return false;
+}
+
 int main(void)
 {
+  assert(!contains_pair("aaa"));
+  assert(contains_pair("qjhvhtzxzqqjkmpb"));
+  assert(contains_pair("xxyxx"));
+  assert(contains_pair("uurcxstgmygtbstg"));
+  assert(!contains_pair("ieodomkazucvgmuy"));  
+  assert(!contains_triplet("uurcxstgmygtbstg"));
+  assert(contains_triplet("ieodomkazucvgmuy"));
 
   FILE* fp = fopen("input.txt", "r");
   assert(fp != NULL);
@@ -64,13 +97,19 @@ int main(void)
   char *line;
   size_t n;
 
-  int total = 0;
+  int total1 = 0;
+  int total2 = 0;
+
   while ((n = getline(&line, &n, fp)) != -1)
   {
-    if (contains_vowels(line) && contains_doubles(line)) total++;
+    // if (contains_vowels(line) && contains_doubles(line)) total1++;
+    if (contains_pair(line) && contains_triplet(line)) total2++;
   }
 
-  printf("%d\n", total);
+  printf("%d\n", total1);
+  printf("%d\n", total2);
+
+  fclose(fp);
 
   return 0;
 }
